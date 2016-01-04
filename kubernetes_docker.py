@@ -2,7 +2,7 @@
 import re
 import docker
 import diamond.collector
-from process_thread import StandardStatsProcessorThread, PodStatsProcessorThread, NetworkPodStatsProcessorThread
+from collector_thread import StandardStatsCollectorThread, PodStatsCollectorThread, NetworkPodStatsCollectorThread
 from container import ContainerListProvider
 
 
@@ -47,10 +47,10 @@ class KubernetesDockerCollector(diamond.collector.Collector):
 
         threads = []
         if container.network:
-            threads.append(PodStatsProcessorThread(self, client, container, node))
-            threads.append(NetworkPodStatsProcessorThread(self, client, container.network, node))
+            threads.append(PodStatsCollectorThread(self, client, container, node))
+            threads.append(NetworkPodStatsCollectorThread(self, client, container.network, node))
         else:
-            threads.append(StandardStatsProcessorThread(self, client, container, node))
+            threads.append(StandardStatsCollectorThread(self, client, container, node))
         map(lambda thread: thread.start(), threads)
 
         return threads

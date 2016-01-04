@@ -3,11 +3,11 @@ import abc
 import threading
 from stats_processor import MemoryStatsProcessor, NetworkStatsProcessor, CpuStatsProcessor
 
-class StatsProcessorThread(threading.Thread):
+class StatsCollectorThread(threading.Thread):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, collector, client, container, path, processors):
-        super(StatsProcessorThread, self).__init__()
+        super(StatsCollectorThread, self).__init__()
         self._collector = collector
         self._client = client
         self._container = container
@@ -24,18 +24,18 @@ class StatsProcessorThread(threading.Thread):
             processor.process(self._collector, self._path, metrics)
 
 
-class NetworkPodStatsProcessorThread(StatsProcessorThread):
+class NetworkPodStatsCollectorThread(StatsCollectorThread):
     def __init__(self, collector, client, container, path):
-        super(NetworkPodStatsProcessorThread, self).__init__(collector, client, container, path,
+        super(NetworkPodStatsCollectorThread, self).__init__(collector, client, container, path,
                                                              [NetworkStatsProcessor])
 
-class PodStatsProcessorThread(StatsProcessorThread):
+class PodStatsCollectorThread(StatsCollectorThread):
     def __init__(self, collector, client, container, path):
-        super(PodStatsProcessorThread, self).__init__(collector, client, container, path,
+        super(PodStatsCollectorThread, self).__init__(collector, client, container, path,
                                                       [MemoryStatsProcessor, CpuStatsProcessor])
 
-class StandardStatsProcessorThread(StatsProcessorThread):
+class StandardStatsCollectorThread(StatsCollectorThread):
     def __init__(self, collector, client, container, path):
-        super(StandardStatsProcessorThread, self).__init__(collector, client, container, path,
+        super(StandardStatsCollectorThread, self).__init__(collector, client, container, path,
                                                            [MemoryStatsProcessor, CpuStatsProcessor,
                                                             NetworkStatsProcessor])
