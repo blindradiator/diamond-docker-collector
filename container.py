@@ -43,13 +43,13 @@ class ContainerListProvider:
 
     @staticmethod
     def _get_container(container_data):
-        id = container_data['Id']
+        container_id = container_data['Id']
         docker_name = container_data['Names'][0][1:]
         image = container_data['Image']
         match = ContainerListProvider.DOCKER_NAME_PATTERN.match(docker_name)
         attributes = match.groupdict() if match else {}
 
-        return Container(id, docker_name, image, **attributes)
+        return Container(container_id, docker_name, image, **attributes)
 
     @staticmethod
     def _is_network_container(container):

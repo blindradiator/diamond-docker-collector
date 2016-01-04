@@ -36,7 +36,7 @@ class KubernetesDockerCollector(diamond.collector.Collector):
         containers = ContainerListProvider.get(client)
 
         threads = []
-        for id, container in containers.iteritems():
+        for container in containers.itervalues():
             container_threads = self._process_container(client, container)
             threads.extend(container_threads)
 
@@ -66,6 +66,6 @@ class KubernetesDockerCollector(diamond.collector.Collector):
         name = container.name if container.name else container.docker_name
         version = self.DOCKER_IMAGE_VERSION_PATTERN.search(container.image).group()
         pod = container.pod if container.pod else self.DEFAULT_POD
-        id = container.id[0:self.MAX_PATH_ID_LENGTH]
+        container_id = container.id[0:self.MAX_PATH_ID_LENGTH]
 
-        return join(namespace, name, version, pod, id)
+        return join(namespace, name, version, pod, container_id)

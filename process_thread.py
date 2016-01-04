@@ -1,27 +1,27 @@
 import json
 import abc
 import threading
-from stats_processor import *
+from stats_processor import MemoryStatsProcessor, NetworkStatsProcessor, CpuStatsProcessor
 
 class StatsProcessorThread(threading.Thread):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, collector, client, container, path, processors):
         super(StatsProcessorThread, self).__init__()
-        self.collector = collector
-        self.client = client
-        self.container = container
-        self.path = path
-        self.processors = processors
+        self._collector = collector
+        self._client = client
+        self._container = container
+        self._path = path
+        self._processors = processors
 
         return
 
     def run(self):
-        data = self.client.stats(self.container.id)
+        data = self._client.stats(self._container.id)
         metrics = json.loads(data.next())
 
-        for processor in self.processors:
-            processor.process(self.collector, self.path, metrics)
+        for processor in self._processors:
+            processor.process(self._collector, self._path, metrics)
 
 
 class NetworkPodStatsProcessorThread(StatsProcessorThread):
