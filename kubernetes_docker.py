@@ -10,7 +10,6 @@ class KubernetesDockerCollector(diamond.collector.Collector):
     DOCKER_IMAGE_VERSION_PATTERN = re.compile('([^:/]+)$')
     DEFAULT_NAMESPACE = 'none'
     DEFAULT_POD = 'none'
-    MAX_PATH_ID_LENGTH = 8
 
     def get_default_config_help(self):
         config_help = super(KubernetesDockerCollector, self).get_default_config_help()
@@ -66,6 +65,5 @@ class KubernetesDockerCollector(diamond.collector.Collector):
         name = container.name if container.name else container.docker_name
         version = self.DOCKER_IMAGE_VERSION_PATTERN.search(container.image).group()
         pod = container.pod if container.pod else self.DEFAULT_POD
-        container_id = container.id[0:self.MAX_PATH_ID_LENGTH]
 
-        return join(namespace, name, version, pod, container_id)
+        return join(namespace, name, version, pod)
