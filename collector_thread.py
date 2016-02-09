@@ -1,4 +1,3 @@
-import json
 import abc
 import threading
 from stats_processor import MemoryStatsProcessor, NetworkStatsProcessor, CpuStatsProcessor
@@ -17,8 +16,7 @@ class StatsCollectorThread(threading.Thread):
         return
 
     def run(self):
-        data = self._client.stats(self._container.id)
-        metrics = json.loads(data.next())
+        metrics = self._client.stats(self._container.id, False, False)
 
         for processor in self._processors:
             processor.process(self._collector, self._path, metrics)
